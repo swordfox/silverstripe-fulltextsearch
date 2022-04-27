@@ -46,7 +46,6 @@ use SilverStripe\ORM\SS_List;
  */
 abstract class SearchIndex extends ViewableData
 {
-    const ID_FIELD = 'id';
     /**
      * Allows this index to hide a parent index. Specifies the name of a parent index to disable
      *
