@@ -23,9 +23,9 @@ class Solr
      * path (default: /solr) - The suburl the solr service is available on
      *
      * Optional fields:
-     * version (default: 4) - The Solr server version. Currently supports 3 and 4 (you can add a sub-version like 4.5 if
-     *   you like, but currently it has no effect)
-     * service (default: depends on version, Solr3Service for 3, Solr4Service for 4)
+     * version (default: 8) - The Solr server version. Currently supports 3, 4 (you can add a sub-version like 4.5 if
+     *   you like, but currently it has no effect) and 8
+     * service (default: depends on version, Solr3Service for 3, Solr4Service for 4 & 8)
      *   the class that provides actual communcation to the Solr server
      * extraspath (default: <basefolder>/fulltextsearch/conf/solr/{version}/extras/) - Absolute path to
      *   the folder containing templates which are used for generating the schema and field definitions.
@@ -84,7 +84,7 @@ class Solr
             'host' => 'localhost',
             'port' => 8983,
             'path' => '/solr',
-            'version' => '4'
+            'version' => '8'
         );
 
         // Build some by-version defaults
@@ -94,7 +94,13 @@ class Solr
         $module = ModuleLoader::getModule('silverstripe/fulltextsearch');
         $modulePath = $module->getPath();
 
-        if (version_compare($version ?? '', '4', '>=')) {
+        if (version_compare($version, '8', '=')) {
+            $versionDefaults = [
+                'service'       => Solr4Service::class,
+                'extraspath'    => $modulePath . '/conf/solr/8/extras/',
+                'templatespath' => $modulePath . '/conf/solr/8/templates/',
+            ];
+        } elseif (version_compare($version, '4', '>=')) {
             $versionDefaults = [
                 'service'       => Solr4Service::class,
                 'extraspath'    => $modulePath . '/conf/solr/4/extras/',
